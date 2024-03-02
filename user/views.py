@@ -23,22 +23,18 @@ class UserSignUpView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args,**kwargs):
+        
         response = super().create(request,*args,**kwargs)
-
-        user = self.serializer_class(data = request.data).initial_data
-        user_instance = CustomUser.objects.get(username=response.data['username'])
+        data = response.data
     
-        if user_instance.role == 'employer':
+        if data['role'] == 'employer':
             # Additional actions for employers
             pass
-        elif user_instance.role == 'employee':
+        elif data['role'] == 'employee':
             # Additional actions for employees
             pass
 
-        refresh_token = RefreshToken.for_user(user_instance)
-        access_token = str(refresh_token.access_token)
-
-        return Response({'access': access_token}, status=status.HTTP_201_CREATED)
+        return Response({"status":"Successfully created the user."}, status=status.HTTP_201_CREATED)
         
 
 
