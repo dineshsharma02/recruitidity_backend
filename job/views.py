@@ -25,3 +25,12 @@ class JobCreateView(CreateAPIView):
 
     def perform_create(self,serializer):
         serializer.save(posted_by=self.request.user)
+
+
+class YourPostedJobsView(ListAPIView):
+    serializer_class = JobListSerializer
+    permission_classes = [IsAuthenticated,IsEmployer]
+    
+    def get_queryset(self):
+        user = self.request.user
+        return Job.objects.filter(posted_by = user)
